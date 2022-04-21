@@ -6,6 +6,7 @@ students, or general citizen a clearer visual display of London crime trend, cri
 a flask app.
 
 ## Instructions to open the dashboard
+Pycharm is preferred to clone and run the dashboard in this case.
 Firstly, install all packages required in the file 'requirements.txt'. It can be done by typing the command below in the terminal
 ```python
 pip install -r requirements.txt
