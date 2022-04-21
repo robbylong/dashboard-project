@@ -15,11 +15,7 @@ Secondly, double-click the dash_app.py file in business crime app folder and go 
 if __name__ == '__main__':
     app.run_server(debug=True,port=1122)
 ```
-and run it.
+run it and click the 'http://127.0.0.1:1122/'.
 
-
-
-## Before you submit the coursework
-
-Remove the instruction text above and complete this README.md using the guidance in the coursework specification.
-
+After clicking it, the effect should be like this:
+![img.png](img.png)
