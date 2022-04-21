@@ -1,12 +1,10 @@
 from pathlib import Path
-
+import json
 import pandas as pd
 
 
 class CrimeData:
     """Class for retrieving and structuring the data.
-    TODO: Add error handling for file read issues.
-    TODO: Improve the efficiency of the stats calcs.
     """
 
     def __init__(self):
@@ -23,12 +21,16 @@ class CrimeData:
         self.borough_bar_chart_data = []
         self.major_bar_chart_data = []
         self.minor_bar_chart_data = []
+        self.map_df = []
 
     def get_data(self):
-        datafolder = Path('data')
-        csvfile = 'dataset_with_geo.csv'
-        self.crime = pd.read_csv(datafolder / csvfile)
+        csvfile = Path(__file__).parent.joinpath('data', 'dataset_with_geo.csv')
+        self.crime = pd.read_csv(csvfile)
+        file_path = Path(__file__).parent.joinpath('data', 'england_lad_2011.geojson')
+        with open(file_path) as json_file:
+            self.la_geojson = json.load(json_file)
         self.borough_list = self.crime["Borough"].unique().tolist()
+        self.geo_code_list = self.crime["GEO_CODE"].unique().tolist()
         self.borough_dropdown_list = self.crime["Borough"].unique().tolist()
         self.major_list = self.crime["Major Class Description"].unique().tolist()
         self.major_dropdown_list = self.crime["Major Class Description"].unique().tolist()
@@ -55,24 +57,24 @@ class CrimeData:
                 self.crime_minor_list = self.crime.groupby(["Major Class Description", "Minor Class Description"]).sum()
                 self.minor_dropdown_list = list(self.crime_minor_list.loc[major].index)
         else:
-            #self.crime_minor_list = self.crime.groupby(["Borough", "Major Class Description", "Minor Class Description"]).sum()
             if major == "(All)":
                 self.crime_minor_list = self.crime.groupby(["Borough", "Minor Class Description"]).sum()
                 self.minor_dropdown_list = list(self.crime_minor_list.loc[borough].index)
 
             else:
-                self.crime_minor_list = self.crime.groupby(["Borough", "Major Class Description", "Minor Class Description"]).sum()
+                self.crime_minor_list = self.crime.groupby(
+                    ["Borough", "Major Class Description", "Minor Class Description"]).sum()
                 self.minor_dropdown_list = list(self.crime_minor_list.loc[borough].loc[major].index)
         if self.minor_dropdown_list[0] != "(All)":
             self.minor_dropdown_list.insert(0, "(All)")
         return self.minor_dropdown_list
 
-    def obtain_major_from_minor(self,minor):
-        self.major_minor = self.crime.groupby(["Major Class Description","Minor Class Description"]).sum()
-        #print(len(self.create_dic.loc["Burglary"].index))
-        for i in range (len(self.major_minor.index)):
+    def obtain_major_from_minor(self, minor):
+        self.major_minor = self.crime.groupby(["Major Class Description", "Minor Class Description"]).sum()
+        # print(len(self.create_dic.loc["Burglary"].index))
+        for i in range(len(self.major_minor.index)):
             major = self.major_list[i]
-            for j in range (len(self.major_minor.loc[major].index)):
+            for j in range(len(self.major_minor.loc[major].index)):
                 if minor == self.major_minor.loc[major].index[j]:
                     return major
 
@@ -140,27 +142,21 @@ class CrimeData:
             else:
                 self.major_bar_chart_data = self.crime.groupby(["Minor Class Description"]).sum()
                 self.major_bar_chart_data = self.major_bar_chart_data.loc[minor]
-                self.minor_bar_chart_data= self.major_bar_chart_data
-                self.minor_bar_chart_list =  [minor]
+                self.minor_bar_chart_data = self.major_bar_chart_data
+                self.minor_bar_chart_list = [minor]
         else:
             if minor == "(All)":
                 self.major_bar_chart_data = self.crime.groupby(["Major Class Description"]).sum()
                 self.major_bar_chart_data = self.major_bar_chart_data.loc[major]
                 self.major_bar_chart_list = [major]
-                self.minor_bar_chart_data = self.crime.groupby(["Major Class Description","Minor Class Description"]).sum()
+                self.minor_bar_chart_data = self.crime.groupby(
+                    ["Major Class Description", "Minor Class Description"]).sum()
                 self.minor_bar_chart_data = self.minor_bar_chart_data.loc[major]
                 self.minor_bar_chart_list = list(self.minor_bar_chart_data.index)
             else:
-                self.major_bar_chart_data = self.crime.groupby(["Major Class Description", "Minor Class Description"]).sum()
+                self.major_bar_chart_data = self.crime.groupby(
+                    ["Major Class Description", "Minor Class Description"]).sum()
                 self.major_bar_chart_data = self.major_bar_chart_data.loc[major].loc[minor]
                 self.major_bar_chart_list = [major]
                 self.minor_bar_chart_data = self.major_bar_chart_data
                 self.minor_bar_chart_list = [minor]
-
-
-# print(self.major_class.loc[self.major_list[2]].sum())
-
-#data = CrimeData()
-#data.get_data()
-#print(data.process_minor_dropdown_list("Brent","(All)"))
-
