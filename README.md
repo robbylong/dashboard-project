@@ -16,6 +16,6 @@ if __name__ == '__main__':
     app.run_server(debug=True,port=1122)
 ```
 run it and click the 'http://127.0.0.1:1122/'.
-
+![img_1.png](img_1.png)
 After clicking it, the effect should be like this:
 ![img.png](img.png)
