@@ -21,3 +21,6 @@ run it and click the 'http://127.0.0.1:1122/'.
 ![img_1.png](img_1.png)
 After clicking it, the effect should be like this:
 ![img.png](img.png)
+
+It is an interactive dashboard, so user can select borough, Major and Minor dropdown box to view relevant data
+for them.
