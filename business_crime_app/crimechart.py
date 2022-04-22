@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 
 class CrimeChart:
-    """ Creates the crime line chart to be used in the dashboard"""
+    """ Creates the crime charts to be used in the dashboard"""
 
     def __init__(self, data):
         self.data = data
